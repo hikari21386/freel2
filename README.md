@@ -111,7 +111,10 @@
         },
         onScanSuccess,
         onScanError
-      );
+      ).catch((err) => {
+        alert("カメラの起動に失敗しました。アクセス権限を確認してください。");
+        console.error(err);
+      });
     }
   </script>
 </body>
