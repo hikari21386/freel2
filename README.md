@@ -56,6 +56,13 @@
       border-radius: 10px;
     }
 
+    video {
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+      border-radius: 10px;
+    }
+
     button {
       background-color: #f4a7b9;
       color: white;
@@ -82,6 +89,7 @@
 
     <!-- QRコード読み取りエリア -->
     <div id="reader"></div>
+    <video id="video" autoplay></video> <!-- カメラ映像表示エリア -->
   </div>
 
   <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
@@ -115,6 +123,23 @@
         alert("カメラの起動に失敗しました。アクセス権限を確認してください。");
         console.error(err);
       });
+
+      // カメラを表示する処理（カメラ起動）
+      if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+          .then(function(stream) {
+            // 映像を<video>要素に表示
+            const video = document.getElementById("video");
+            video.srcObject = stream;
+            video.play();
+          })
+          .catch(function(error) {
+            alert("カメラを起動できませんでした。");
+            console.error("カメラエラー:", error);
+          });
+      } else {
+        alert("このブラウザではカメラを使用できません。");
+      }
     }
   </script>
 </body>
