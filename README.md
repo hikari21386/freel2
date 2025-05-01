@@ -46,14 +46,73 @@
       font-size: 18px;
       line-height: 1.6;
     }
+
+    #reader {
+      width: 100%;
+      max-width: 500px;
+      margin: 20px auto;
+      border: 2px solid #f4a7b9;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    button {
+      background-color: #f4a7b9;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #e75480;
+    }
   </style>
 </head>
 <body>
   <div class="coupon-box">
     <div class="ribbon">ひみつクーポン</div>
     <h1>ひかちゃん用</h1>
-    <p>この画面を見たらはるちゃんにQRコードを表示してもらってください
-      <br>最悪の事態が起こります</p>
+    <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
+
+    <!-- QRコード読み取りボタン -->
+    <button onclick="startQRCodeScanner()">QRコードを読み取る</button>
+
+    <!-- QRコード読み取りエリア -->
+    <div id="reader"></div>
   </div>
+
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <script>
+    // QRコード読み取りを開始する関数
+    function startQRCodeScanner() {
+      const html5QrCode = new Html5Qrcode("reader");
+
+      // QRコードが正常に読み取られた時
+      function onScanSuccess(decodedText, decodedResult) {
+        alert("QRコードを読み取りました！");  // 必要に応じてメッセージを表示
+        // 読み取ったURLに遷移
+        window.location.href = decodedText;  // ここでQRコードから読み取ったURLに遷移
+      }
+
+      // QRコード読み取りのエラー時
+      function onScanError(errorMessage) {
+        console.warn("QRコード読み取りエラー:", errorMessage);
+      }
+
+      // QRコード読み取りの開始
+      html5QrCode.start(
+        { facingMode: "environment" },  // カメラの設定
+        {
+          fps: 10,  // フレームレート
+          qrbox: 250  // QRコード読み取りエリアのサイズ
+        },
+        onScanSuccess,
+        onScanError
+      );
+    }
+  </script>
 </body>
 </html>
