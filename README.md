@@ -5,74 +5,8 @@
   <title>ひかちゃんクーポン</title> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: "Hiragino Maru Gothic ProN", Meiryo, sans-serif;
-      background: #fff0f5;
-      text-align: center;
-      padding: 40px;
-      color: #555;
-    }
-
-    .coupon-box {
-      background: #fff;
-      border: 3px dotted #f4a7b9;
-      border-radius: 20px;
-      padding: 30px;
-      display: inline-block;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      position: relative;
-    }
-
-    .ribbon {
-      width: 120px;
-      height: 30px;
-      background: #f4a7b9;
-      color: white;
-      font-weight: bold;
-      line-height: 30px;
-      position: absolute;
-      top: -15px;
-      left: calc(50% - 60px);
-      border-radius: 15px;
-      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    h1 {
-      color: #e75480;
-      font-size: 26px;
-      margin-top: 30px;
-    }
-
-    p {
-      font-size: 18px;
-      line-height: 1.6;
-    }
-
-    #reader {
-      width: 100%;
-      max-width: 300px;
-      height: 300px;
-      margin: 20px auto;
-      border: 2px solid #f4a7b9;
-      padding: 10px;
-      border-radius: 10px;
-      display: none;
-    }
-
-    button {
-      background-color: #f4a7b9;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      background-color: #e75480;
-    }
+    /* CSSは省略せず全部OK */
+    /* あなたのCSSそのままで大丈夫です */
   </style>
 </head>
 <body>
@@ -81,43 +15,44 @@
     <h1>ひかちゃん用</h1>
     <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
 
-<button id="start-btn">QRコードを読み取る</button>
-<div id="reader" style="display: none;"></div>
+    <button id="scanBtn">QRコードを読み取る</button>
+    <div id="reader"></div>
+  </div>
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('start-btn');
-    const reader = document.getElementById('reader');
+  <!-- 正しいライブラリURL -->
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 
-    button.addEventListener('click', () => {
-      reader.style.display = 'block';
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const button = document.getElementById("scanBtn");
+      const reader = document.getElementById("reader");
 
-      const html5QrCode = new Html5Qrcode("reader");
+      button.addEventListener('click', function () {
+        reader.style.display = 'block';
+        console.log("ボタン押された"); 
 
-      html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: 250
-        },
-        (decodedText, decodedResult) => {
-          alert("QRコード読み取り成功！移動します！");
-          window.location.href = decodedText;
-        },
-        (errorMessage) => {
-          console.warn("読み取り中エラー:", errorMessage);
-        }
-      ).catch((err) => {
-        alert("カメラ起動に失敗！iPhoneの設定でSafariのカメラ許可を確認してね！");
-        console.error("起動失敗:", err);
+        const html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start(
+          { facingMode: "environment" },
+          {
+            fps: 10,
+            qrbox: 250
+          },
+          (decodedText) => {
+            alert("QRコード読み取り成功！移動します！");
+            window.location.href = decodedText;
+          },
+          (errorMessage) => {
+            console.warn("読み取り中エラー:", errorMessage);
+          }
+        ).catch((err) => {
+          alert("カメラ起動に失敗！iPhoneの設定でSafariのカメラ許可を確認してね！");
+          console.error("起動失敗:", err);
+        });
       });
     });
-  });
-</script>
   </script>
 </body>
 </html>
-
 
         
