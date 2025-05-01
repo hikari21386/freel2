@@ -5,8 +5,74 @@
   <title>ひかちゃんクーポン</title> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* CSSは省略せず全部OK */
-    /* あなたのCSSそのままで大丈夫です */
+body {
+  font-family: "Hiragino Maru Gothic ProN", Meiryo, sans-serif;
+  background: #fff0f5;
+  text-align: center;
+  padding: 40px;
+  color: #555;
+}
+
+.coupon-box {
+  background: #fff;
+  border: 3px dotted #f4a7b9;
+  border-radius: 20px;
+  padding: 30px;
+  display: inline-block;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.ribbon {
+  width: 120px;
+  height: 30px;
+  background: #f4a7b9;
+  color: white;
+  font-weight: bold;
+  line-height: 30px;
+  position: absolute;
+  top: -15px;
+  left: calc(50% - 60px);
+  border-radius: 15px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  color: #e75480;
+  font-size: 26px;
+  margin-top: 30px;
+}
+
+p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+#reader {
+  width: 100%;
+  max-width: 300px;
+  height: 300px;
+  margin: 20px auto;
+  border: 2px solid #f4a7b9;
+  padding: 10px;
+  border-radius: 10px;
+  display: none;
+}
+
+button {
+  background-color: #f4a7b9;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #e75480;
+}
   </style>
 </head>
 <body>
