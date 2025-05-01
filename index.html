@@ -92,7 +92,7 @@
 
     button.addEventListener('click', () => {
       reader.style.display = 'block';
-
+      consile.log("ボタン押された"); 
       const html5QrCode = new Html5Qrcode("reader");
 
       html5QrCode.start(
