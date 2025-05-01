@@ -81,15 +81,17 @@
     <h1>ひかちゃん用</h1>
     <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
 
-    <button onclick="startQRCodeScanner()">QRコードを読み取る</button>
-    <div id="reader"></div>
-  </div>
+<button id="start-btn">QRコードを読み取る</button>
+<div id="reader" style="display: none;"></div>
 
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
-  <script>
-    function startQRCodeScanner() {
-      const reader = document.getElementById("reader");
-      reader.style.display = "block"; // 読み取りエリアを表示
+<script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('start-btn');
+    const reader = document.getElementById('reader');
+
+    button.addEventListener('click', () => {
+      reader.style.display = 'block';
 
       const html5QrCode = new Html5Qrcode("reader");
 
@@ -104,14 +106,15 @@
           window.location.href = decodedText;
         },
         (errorMessage) => {
-          // 読み取り中のエラーをコンソールに表示
-          console.warn(errorMessage);
+          console.warn("読み取り中エラー:", errorMessage);
         }
       ).catch((err) => {
-        alert("カメラの起動に失敗しました。iPhoneの設定でカメラのアクセスを許可してください。");
-        console.error("起動エラー:", err);
+        alert("カメラ起動に失敗！iPhoneの設定でSafariのカメラ許可を確認してね！");
+        console.error("起動失敗:", err);
       });
-    }
+    });
+  });
+</script>
   </script>
 </body>
 </html>
