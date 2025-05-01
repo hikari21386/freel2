@@ -86,11 +86,11 @@
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('DOMContentLoaded', function(){
     const button = document.getElementById("scanBtn");
     const reader = document.getElementById("click",startQRCodeScanner);
 
-    button.addEventListener('click', () => {
+    button.addEventListener('click', function ()  {
       reader.style.display = 'block';
       consile.log("ボタン押された"); 
       const html5QrCode = new Html5Qrcode("reader");
