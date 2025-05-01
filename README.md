@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ひかちゃんクーポン</title>
+  <title>ひかちゃんクーポン</title> <! --ここが正しいtitleタグ -->
   <style>
     body {
       font-family: "Hiragino Maru Gothic ProN", Meiryo, sans-serif;
