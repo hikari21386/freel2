@@ -82,9 +82,16 @@
     <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
 
 <button id="scanBtn">QRコードを読み取る</button>
-<div id="reader" style="display: none;"></div>
+<div id="reader"></div>
+    #reader {
+     width: 100%;
+     max-width: 500px;
+     margin 20px solid #f4a7b9;
+     padding:10px;
+     border-radius: 10px;
+    }
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/htm15-qrcord/minified/htm15-qrcord.min.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', function(){
     const button = document.getElementById("scanBtn");
