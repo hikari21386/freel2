@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <title>ひかちゃんクーポン</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: "Hiragino Maru Gothic ProN", Meiryo, sans-serif;
@@ -50,18 +50,13 @@
 
     #reader {
       width: 100%;
-      max-width: 500px;
+      max-width: 300px;
+      height: 300px;
       margin: 20px auto;
       border: 2px solid #f4a7b9;
       padding: 10px;
       border-radius: 10px;
-    }
-
-    video {
-      width: 100%;
-      max-width: 500px;
-      margin: 20px auto;
-      border-radius: 10px;
+      display: none;
     }
 
     button {
@@ -72,6 +67,7 @@
       border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
+      margin-top: 20px;
     }
 
     button:hover {
@@ -85,63 +81,40 @@
     <h1>ひかちゃん用</h1>
     <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
 
-    <!-- QRコード読み取りボタン -->
     <button onclick="startQRCodeScanner()">QRコードを読み取る</button>
-
-    <!-- QRコード読み取りエリア -->
     <div id="reader"></div>
-    <video id="video" autoplay></video> <!-- カメラ映像表示エリア -->
   </div>
 
-  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
   <script>
-    // QRコード読み取りを開始する関数
     function startQRCodeScanner() {
+      const reader = document.getElementById("reader");
+      reader.style.display = "block"; // 読み取りエリアを表示
+
       const html5QrCode = new Html5Qrcode("reader");
 
-      // QRコードが正常に読み取られた時
-      function onScanSuccess(decodedText, decodedResult) {
-        alert("QRコードを読み取りました！");  // 必要に応じてメッセージを表示
-        // 読み取ったURLに遷移
-        window.location.href = decodedText;  // ここでQRコードから読み取ったURLに遷移
-      }
-
-      // QRコード読み取りのエラー時
-      function onScanError(errorMessage) {
-        console.warn("QRコード読み取りエラー:", errorMessage);
-      }
-
-      // QRコード読み取りの開始
       html5QrCode.start(
-        { facingMode: "environment" },  // カメラの設定
+        { facingMode: "environment" },
         {
-          fps: 10,  // フレームレート
-          qrbox: 250  // QRコード読み取りエリアのサイズ
+          fps: 10,
+          qrbox: 250
         },
-        onScanSuccess,
-        onScanError
+        (decodedText, decodedResult) => {
+          alert("QRコード読み取り成功！移動します！");
+          window.location.href = decodedText;
+        },
+        (errorMessage) => {
+          // 読み取り中のエラーをコンソールに表示
+          console.warn(errorMessage);
+        }
       ).catch((err) => {
-        alert("カメラの起動に失敗しました。アクセス権限を確認してください。");
-        console.error(err);
+        alert("カメラの起動に失敗しました。iPhoneの設定でカメラのアクセスを許可してください。");
+        console.error("起動エラー:", err);
       });
-
-      // カメラを表示する処理（カメラ起動）
-      if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-          .then(function(stream) {
-            // 映像を<video>要素に表示
-            const video = document.getElementById("video");
-            video.srcObject = stream;
-            video.play();
-          })
-          .catch(function(error) {
-            alert("カメラを起動できませんでした。");
-            console.error("カメラエラー:", error);
-          });
-      } else {
-        alert("このブラウザではカメラを使用できません。");
-      }
     }
   </script>
 </body>
 </html>
+
+
+
