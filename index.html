@@ -81,14 +81,14 @@
     <h1>ひかちゃん用</h1>
     <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
 
-<button id="start-btn">QRコードを読み取る</button>
+<button id="scanBtn">QRコードを読み取る</button>
 <div id="reader" style="display: none;"></div>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('start-btn');
-    const reader = document.getElementById('reader');
+    const button = document.getElementById("scanBtn");
+    const reader = document.getElementById("click",startQRCodeScanner);
 
     button.addEventListener('click', () => {
       reader.style.display = 'block';
