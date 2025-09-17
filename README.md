@@ -1,124 +1,96 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>ひかちゃんクーポン</title> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-body {
-  font-family: "Hiragino Maru Gothic ProN", Meiryo, sans-serif;
-  background: #fff0f5;
-  text-align: center;
-  padding: 40px;
-  color: #555;
+<!doctype html>
+recs.forEach(r=>{
+const v=r.categoryValue; if(!sumsByCategory[v]) sumsByCategory[v]=0; sumsByCategory[v]+=r.amount;
+if(v.startsWith('income')) totalIncome+=r.amount; else totalExpense+=r.amount;
+});
+for(const k in sumsByCategory){ labels.push(k); barData.push(sumsByCategory[k]); pieLabels.push(k); pieData.push(sumsByCategory[k]); }
+
+
+const ctx=document.getElementById('barChart').getContext('2d');
+if(barChart) barChart.destroy();
+barChart=new Chart(ctx,{type:'bar',data:{labels:labels, datasets:[{label:'カテゴリ別',data:barData}]}, options:{responsive:true}});
+
+
+const ctx2=document.getElementById('pieChart').getContext('2d'); if(pieChart) pieChart.destroy();
+pieChart=new Chart(ctx2,{type:'pie',data:{labels:pieLabels,datasets:[{data:pieData}]}, options:{responsive:true}});
 }
 
-.coupon-box {
-  background: #fff;
-  border: 3px dotted #f4a7b9;
-  border-radius: 20px;
-  padding: 30px;
-  display: inline-block;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  position: relative;
+
+function getAllRecordsForMonth(month){
+// month is YYYY-MM or empty -> all
+if(!state.active) return [];
+const all=state.accounts[state.active].records||[];
+if(!month) return all;
+return all.filter(r=>r.date.slice(0,7)===month);
 }
 
-.ribbon {
-  width: 120px;
-  height: 30px;
-  background: #f4a7b9;
-  color: white;
-  font-weight: bold;
-  line-height: 30px;
-  position: absolute;
-  top: -15px;
-  left: calc(50% - 60px);
-  border-radius: 15px;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+
+// render UI
+function renderAll(){
+const list=document.getElementById('recordsList'); list.innerHTML='';
+const catSumsDiv=document.getElementById('categorySums'); catSumsDiv.innerHTML='';
+if(!state.active){acctMsg('ログインしてね'); return}
+const recs = state.accounts[state.active].records||[];
+const personFilter=document.getElementById('personFilter').value;
+
+
+const sumsByCat={}; let houseIncome=0, houseExpense=0;
+
+
+recs.forEach(r=>{
+const li=document.createElement('li'); li.className='record';
+const left=document.createElement('div'); left.className='left';
+const badge=document.createElement('div'); badge.className='badge'; badge.textContent=r.owner; badge.style.background=(r.owner==='hikari'?getComputedStyle(document.documentElement).getPropertyValue('--hikari'):(r.owner==='akito'?getComputedStyle(document.documentElement).getPropertyValue('--akito'):getComputedStyle(document.documentElement).getPropertyValue('--ayumi')));
+left.appendChild(badge);
+const txt=document.createElement('div'); txt.innerHTML=`<strong>${r.categoryLabel}</strong><div class="small">${r.date} / ${r.payType}</div>`;
+left.appendChild(txt);
+const right=document.createElement('div'); right.innerHTML=`<div style="text-align:right"><div>${r.amount} 円</div><div class="small">${r.id}</div></div>`;
+li.appendChild(left); li.appendChild(right);
+
+
+// apply filter
+if(personFilter==='all' || personFilter===r.owner) list.appendChild(li);
+
+
+// sums
+if(!sumsByCat[r.categoryLabel]) sumsByCat[r.categoryLabel]=0; sumsByCat[r.categoryLabel]+=r.amount;
+if(r.categoryValue.startsWith('income')) houseIncome += r.amount; else houseExpense += r.amount;
+});
+
+
+// category list
+const ul=document.createElement('ul'); for(const k in sumsByCat){const it=document.createElement('li'); it.textContent=`${k}: ${sumsByCat[k]} 円`; ul.appendChild(it);} catSumsDiv.appendChild(ul);
+document.getElementById('houseIncome').textContent = houseIncome;
+document.getElementById('houseExpense').textContent = houseExpense;
+document.getElementById('net').textContent = (houseIncome - houseExpense);
 }
 
-h1 {
-  color: #e75480;
-  font-size: 26px;
-  margin-top: 30px;
-}
 
-p {
-  font-size: 18px;
-  line-height: 1.6;
-}
+// initial
+renderAll();
 
-#reader {
-  width: 100%;
-  max-width: 300px;
-  height: 300px;
-  margin: 20px auto;
-  border: 2px solid #f4a7b9;
-  padding: 10px;
-  border-radius: 10px;
-  display: none;
-}
 
-button {
-  background-color: #f4a7b9;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 20px;
-}
+// draw charts button
+document.getElementById('drawBtn').addEventListener('click', ()=>{
+const month=document.getElementById('monthPicker').value; drawCharts(month);
+});
 
-button:hover {
-  background-color: #e75480;
-}
-  </style>
-</head>
-<body>
-  <div class="coupon-box">
-    <div class="ribbon">ひみつクーポン</div>
-    <h1>ひかちゃん用</h1>
-    <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
 
-    <button id="scanBtn">QRコードを読み取る</button>
-    <div id="reader"></div>
-  </div>
+// load sample data helper (for demo) — optional
+function loadSample(){
+const name='demo'; state.accounts[name]={passwordHash:'',records:[
+{id:uid(),date:'2025-09-01',categoryValue:'income_salary',categoryLabel:'基本給',amount:250000,owner:'hikari',payType:'bank'},
+{id:uid(),date:'2025-09-02',categoryValue:'expense_rent',categoryLabel:'家賃',amount:60000,owner:'hikari',payType:'bank'},
+{id:uid(),date:'2025-09-05',categoryValue:'expense_util',categoryLabel:'光熱費',amount:12000,owner:'akito',payType:'card'},
+{id:uid(),date:'2025-09-07',categoryValue:'expense_cat',categoryLabel:'猫の支出',amount:7000,owner:'hikari',payType:'cash'},
+]}; state.active=name; saveState(); renderAll(); acctMsg('デモデータ読み込み'); }
 
-  <!-- 正しいライブラリURL -->
-  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const button = document.getElementById("scanBtn");
-      const reader = document.getElementById("reader");
+// optional demo loader
+if(!state.active && Object.keys(state.accounts).length===0){loadSample();}
 
-      button.addEventListener('click', function () {
-        reader.style.display = 'block';
-        console.log("ボタン押された"); 
 
-        const html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start(
-          { facingMode: "environment" },
-          {
-            fps: 10,
-            qrbox: 250
-          },
-          (decodedText) => {
-            alert("QRコード読み取り成功！移動します！");
-            window.location.href = decodedText;
-          },
-          (errorMessage) => {
-            console.warn("読み取り中エラー:", errorMessage);
-          }
-        ).catch((err) => {
-          alert("カメラ起動に失敗！iPhoneの設定でSafariのカメラ許可を確認してね！");
-          console.error("起動失敗:", err);
-        });
-      });
-    });
-  </script>
+</script>
 </body>
 </html>
-
         
