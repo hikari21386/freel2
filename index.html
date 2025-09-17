@@ -1,122 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>ひかちゃんクーポン</title> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-body {
-  font-family: "Hiragino Maru Gothic ProN", Meiryo, sans-serif;
-  background: #fff0f5;
-  text-align: center;
-  padding: 40px;
-  color: #555;
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>やさしい家計簿 — ひかり & 友達 & 猫</title>
+<!-- シンプルなスタイル。淡いピンク基調。個人は色分け -->
+<style>
+:root{
+--bg:#fff7f8; /* 淡いピンク */
+--card:#fff;
+--hikari:#ffd7e0; /* ピンク */
+--akito:#d7f0ff; /* 水色 */
+--ayumi:#ffc6c6; /* 赤寄り */
+--text:#333;
+--muted:#666;
+--accent:#ff7aa2;
+--radius:12px;
+--glass: rgba(255,255,255,0.65);
 }
-
-.coupon-box {
-  background: #fff;
-  border: 3px dotted #f4a7b9;
-  border-radius: 20px;
-  padding: 30px;
-  display: inline-block;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.ribbon {
-  width: 120px;
-  height: 30px;
-  background: #f4a7b9;
-  color: white;
-  font-weight: bold;
-  line-height: 30px;
-  position: absolute;
-  top: -15px;
-  left: calc(50% - 60px);
-  border-radius: 15px;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
-}
-
-h1 {
-  color: #e75480;
-  font-size: 26px;
-  margin-top: 30px;
-}
-
-p {
-  font-size: 18px;
-  line-height: 1.6;
-}
-
-#reader {
-  width: 100%;
-  max-width: 300px;
-  height: 300px;
-  margin: 20px auto;
-  border: 2px solid #f4a7b9;
-  padding: 10px;
-  border-radius: 10px;
-  display: none;
-}
-
-button {
-  background-color: #f4a7b9;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-button:hover {
-  background-color: #e75480;
-}
-  </style>
+*{box-sizing:border-box}
+body{font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; margin:0; background:linear-gradient(180deg,var(--bg), #fff); color:var(--text); padding:18px}
+header{display:flex;gap:12px;align-items:center}
+h1{margin:0;font-size:1.4rem}
+.container{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:16px}
+.panel{background:var(--card);border-radius:var(--radius);padding:12px;box-shadow:0 6px 18px rgba(0,0,0,0.07)}
+.small{font-size:0.85rem;color:var(--muted)}
+label{display:block;margin-top:8px;font-size:0.9rem}
+input, select, button{padding:8px;border-radius:8px;border:1px solid #e6e6e6;background:transparent}
+button{cursor:pointer}
+.owners{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.owner-pill{padding:6px 8px;border-radius:999px;font-weight:600}
+.owner-hikari{background:var(--hikari)}
+.owner-akito{background:var(--akito)}
+.owner-ayumi{background:var(--ayumi)}
+.owner-pet{background:#fff3d9}
+.records{max-height:42vh;overflow:auto;margin-top:8px}
+ul.record-list{list-style:none;padding:0;margin:0}
+li.record{display:flex;justify-content:space-between;padding:8px;border-radius:8px;margin-bottom:6px}
+.record .left{display:flex;gap:8px;align-items:center}
+.badge{font-size:0.75rem;padding:4px 6px;border-radius:6px}
+.summary{margin-top:12px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px dashed #eee;text-align:left}
+.chart-wrap{height:260px}
+.pets{display:flex;gap:8px}
+.pet-card{width:60px;height:60px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.pet-edel{background:#ffeef6}
+.pet-aster{background:#fff0e0}
+.pet-lew{background:#f0f7ff}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.danger{color:#b00}
+footer{margin-top:18px;font-size:0.8rem;color:var(--muted)}
+/* responsive */
+@media(max-width:900px){.container{grid-template-columns:1fr}.chart-wrap{height:220px}}
+</style>
 </head>
 <body>
-  <div class="coupon-box">
-    <div class="ribbon">ひみつクーポン</div>
-    <h1>ひかちゃん用</h1>
-    <p>この画面を見たらはるちゃんにQRコードを表示してもらってください<br>最悪の事態が起こります</p>
+<header>
+<h1>やさしい家計簿 — ひかり家計</h1>
+<div class="small">カテゴリは選べて自由追加、valueで管理、月ごとにグラフ化・保存</div>
+</header>
 
-    <button id="scanBtn">QRコードを読み取る</button>
-    <div id="reader"></div>
-  </div>
 
-  <!-- 正しいライブラリURL -->
-  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+<div class="container">
+<!-- left panel: controls + input -->
+<aside class="panel">
+<h3>アカウント & セキュリティ</h3>
+<div class="small">クライアント側保存 / ローカルのみ（ブラウザの localStorage）</div>
+<label>アカウント名</label>
+<input id="accountName" placeholder="例: hikari_house" />
+<label>パスワード（初回登録）</label>
+<input id="password" type="password" placeholder="パスワード" />
+<div style="display:flex;gap:8px;margin-top:8px">
+<button id="createAccount">アカウント作成</button>
+<button id="login">ログイン</button>
+<button id="logout">ログアウト</button>
+</div>
+<div id="acctMsg" class="small" style="margin-top:8px"></div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const button = document.getElementById("scanBtn");
-      const reader = document.getElementById("reader");
-
-      button.addEventListener('click', function () {
-        reader.style.display = 'block';
-        console.log("ボタン押された"); 
-
-        const html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start(
-          { facingMode: "environment" },
-          {
-            fps: 10,
-            qrbox: 250
-          },
-          (decodedText) => {
-            alert("QRコード読み取り成功！移動します！");
-            window.location.href = decodedText;
-          },
-          (errorMessage) => {
-            console.warn("読み取り中エラー:", errorMessage);
-          }
-        ).catch((err) => {
-          alert("カメラ起動に失敗！iPhoneの設定でSafariのカメラ許可を確認してね！");
-          console.error("起動失敗:", err);
-        });
-      });
-    });
-  </script>
-</body>
-</html>
